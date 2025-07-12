@@ -1,5 +1,7 @@
+santander\novaplax\model\ReporteVenta.class
 santander\novaplax\model\Usuario.class
 santander\novaplax\servlets\InicioServlet.class
+santander\novaplax\dao\ReporteDAO.class
 santander\novaplax\model\TicketDetalle.class
 santander\novaplax\dao\TicketDAO.class
 santander\novaplax\servlets\ArticuloServlet.class
@@ -11,6 +13,7 @@ santander\novaplax\dao\ClienteDAO.class
 santander\novaplax\model\Cliente.class
 santander\novaplax\model\Ticket.class
 santander\novaplax\servlets\LoginServlet.class
+santander\novaplax\servlets\ReporteServlet.class
 santander\novaplax\servlets\ClienteServlet.class
 santander\novaplax\config\ConexionBD.class
 santander\novaplax\dao\UsuarioDAO.class
