@@ -190,7 +190,7 @@
             <a class="nav-link <%= request.getRequestURI().contains("/ventas") ? "active" : "" %>" 
                href="<%= request.getContextPath() %>/ventas">
                 <i class="fas fa-cash-register"></i>
-                <span>Registro de Ventas</span>
+                <span>Gestionar Ventas</span>
             </a>
         </li>
         

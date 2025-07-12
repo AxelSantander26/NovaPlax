@@ -17,3 +17,4 @@ santander\novaplax\servlets\ReporteServlet.class
 santander\novaplax\servlets\ClienteServlet.class
 santander\novaplax\config\ConexionBD.class
 santander\novaplax\dao\UsuarioDAO.class
+santander\novaplax\servlets\UsuarioControllerServlet.class
