@@ -3,7 +3,6 @@ package santander.novaplax.dao;
 import santander.novaplax.config.ConexionBD;
 import santander.novaplax.model.Ticket;
 import santander.novaplax.model.TicketDetalle;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,12 +10,14 @@ import santander.novaplax.model.Articulo;
 import santander.novaplax.model.Cliente;
 
 public class TicketDAO {
-    public void insertar(Ticket ticket) {
+
+    public void insertar(Ticket ticket) throws SQLException {
         String sqlTicket = "INSERT INTO ticket (usuario_id, cliente_id, fecha, total) VALUES (?, ?, NOW(), ?)";
         String sqlDetalle = "INSERT INTO ticket_detalle (ticket_id, articulo_id, cantidad, precio_unitario) VALUES (?, ?, ?, ?)";
         String sqlActualizarStock = "UPDATE articulo SET stock = stock - ? WHERE id = ?";
-
-        try (Connection conn = ConexionBD.conectar()) {
+        Connection conn = null;
+        try {
+            conn = ConexionBD.conectar();
             conn.setAutoCommit(false);
             try (PreparedStatement stmtTicket = conn.prepareStatement(sqlTicket, Statement.RETURN_GENERATED_KEYS)) {
                 stmtTicket.setInt(1, ticket.getUsuarioId());
@@ -32,9 +33,11 @@ public class TicketDAO {
                 if (rs.next()) {
                     ticketId = rs.getInt(1);
                 }
-                try (PreparedStatement stmtDetalle = conn.prepareStatement(sqlDetalle);
-                     PreparedStatement stmtStock = conn.prepareStatement(sqlActualizarStock)) {
+                try (PreparedStatement stmtDetalle = conn.prepareStatement(sqlDetalle); PreparedStatement stmtStock = conn.prepareStatement(sqlActualizarStock)) {
                     for (TicketDetalle d : ticket.getDetalles()) {
+                        if (!validarStock(conn, d.getArticuloId(), d.getCantidad())) {
+                            throw new SQLException("Stock insuficiente para el artículo ID: " + d.getArticuloId());
+                        }
                         stmtDetalle.setInt(1, ticketId);
                         stmtDetalle.setInt(2, d.getArticuloId());
                         stmtDetalle.setInt(3, d.getCantidad());
@@ -46,15 +49,30 @@ public class TicketDAO {
                     }
                 }
                 conn.commit();
+            } catch (SQLException e) {
+                conn.rollback();
+                throw e;
             }
-        } catch (SQLException e) {
+        } finally {
+            if (conn != null) {
+                conn.setAutoCommit(true);
+                conn.close();
+            }
+        }
+    }
+
+    private boolean validarStock(Connection conn, int articuloId, int cantidad) throws SQLException {
+        String sql = "SELECT stock FROM articulo WHERE id = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, articuloId);
+            ResultSet rs = stmt.executeQuery();
+            return rs.next() && rs.getInt("stock") >= cantidad;
         }
     }
 
     public boolean validarStock(int articuloId, int cantidad) {
         String sql = "SELECT stock FROM articulo WHERE id = ?";
-        try (Connection conn = ConexionBD.conectar();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection conn = ConexionBD.conectar(); PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, articuloId);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
@@ -69,9 +87,7 @@ public class TicketDAO {
     public List<Articulo> listarArticulosConStock() {
         List<Articulo> lista = new ArrayList<>();
         String sql = "SELECT id, nombre, precio, stock FROM articulo WHERE stock > 0";
-        try (Connection conn = ConexionBD.conectar();
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
+        try (Connection conn = ConexionBD.conectar(); PreparedStatement stmt = conn.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
                 Articulo a = new Articulo();
                 a.setId(rs.getInt("id"));
@@ -88,9 +104,7 @@ public class TicketDAO {
     public List<Cliente> listarClientes() {
         List<Cliente> lista = new ArrayList<>();
         String sql = "SELECT id, dni, nombre, apellido FROM cliente";
-        try (Connection conn = ConexionBD.conectar();
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
+        try (Connection conn = ConexionBD.conectar(); PreparedStatement stmt = conn.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
                 Cliente c = new Cliente();
                 c.setId(rs.getInt("id"));
