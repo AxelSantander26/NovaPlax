@@ -1,9 +1,16 @@
+D:\Github\Análisis y Diseño de Sistemas\NovaPlax\src\main\java\santander\novaplax\model\TicketDetalle.java
 D:\Github\Análisis y Diseño de Sistemas\NovaPlax\src\main\java\santander\novaplax\servlets\CerrarSesionServlet.java
 D:\Github\Análisis y Diseño de Sistemas\NovaPlax\src\main\java\santander\novaplax\dao\ClienteDAO.java
 D:\Github\Análisis y Diseño de Sistemas\NovaPlax\src\main\java\santander\novaplax\servlets\LoginServlet.java
 D:\Github\Análisis y Diseño de Sistemas\NovaPlax\src\main\java\santander\novaplax\dao\UsuarioDAO.java
+D:\Github\Análisis y Diseño de Sistemas\NovaPlax\src\main\java\santander\novaplax\dao\ArticuloDAO.java
 D:\Github\Análisis y Diseño de Sistemas\NovaPlax\src\main\java\santander\novaplax\servlets\InicioServlet.java
 D:\Github\Análisis y Diseño de Sistemas\NovaPlax\src\main\java\santander\novaplax\model\Usuario.java
 D:\Github\Análisis y Diseño de Sistemas\NovaPlax\src\main\java\santander\novaplax\servlets\ClienteServlet.java
 D:\Github\Análisis y Diseño de Sistemas\NovaPlax\src\main\java\santander\novaplax\model\Cliente.java
+D:\Github\Análisis y Diseño de Sistemas\NovaPlax\src\main\java\santander\novaplax\model\Ticket.java
+D:\Github\Análisis y Diseño de Sistemas\NovaPlax\src\main\java\santander\novaplax\servlets\ArticuloServlet.java
+D:\Github\Análisis y Diseño de Sistemas\NovaPlax\src\main\java\santander\novaplax\servlets\VentaServlet.java
+D:\Github\Análisis y Diseño de Sistemas\NovaPlax\src\main\java\santander\novaplax\dao\TicketDAO.java
 D:\Github\Análisis y Diseño de Sistemas\NovaPlax\src\main\java\santander\novaplax\config\ConexionBD.java
+D:\Github\Análisis y Diseño de Sistemas\NovaPlax\src\main\java\santander\novaplax\model\Articulo.java
