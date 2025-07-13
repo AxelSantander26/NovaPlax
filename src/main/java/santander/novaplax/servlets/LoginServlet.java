@@ -6,8 +6,11 @@ import jakarta.servlet.http.*;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import santander.novaplax.model.Usuario;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import santander.novaplax.dao.UsuarioDAO;
+import santander.novaplax.model.Usuario;
 
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
@@ -27,27 +30,31 @@ public class LoginServlet extends HttpServlet {
 
         Usuario user = null;
 
+        UsuarioDAO dao = new UsuarioDAO();
         try {
-            UsuarioDAO dao = new UsuarioDAO();
             user = dao.buscarPorUsuarioYClave(usuario, clave);
-        } catch (SQLException e) {
+        } catch (SQLException ex) {
+            Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         if (user != null) {
             HttpSession session = request.getSession();
             session.setAttribute("usuarioLogueado", user);
 
-            if ("admin".equalsIgnoreCase(user.getRol())) {
-                response.sendRedirect("Pages/Admin/info.jsp");
-            } else if ("vendedor".equalsIgnoreCase(user.getRol())) {
-                response.sendRedirect("Pages/Vendedor/info.jsp");
-            } else {
-                response.sendRedirect("login.jsp");
-            }
+            String contexto = request.getContextPath();
 
+            switch (user.getRol().toLowerCase()) {
+                case "admin":
+                    response.sendRedirect(contexto + "/Pages/Admin/info.jsp");
+                    break;
+                case "vendedor":
+                    response.sendRedirect(contexto + "/Pages/Vendedor/info.jsp");
+                    break;
+                default:
+                    response.sendRedirect(contexto + "/login.jsp");
+            }
         } else {
             request.setAttribute("error", "Usuario o clave incorrectos");
             request.getRequestDispatcher("login.jsp").forward(request, response);
         }
     }
-}
