@@ -27,10 +27,11 @@
 
 <div class="main-content">
     <div class="container mt-4">
+
         <% if (action.equals("nuevo") || action.equals("editar")) { %>
             <h2><%= edicion ? "Editar Usuario" : "Nuevo Usuario" %></h2>
             <form method="post" action="usuarios" class="mt-3">
-                <input type="hidden" name="id" value="<%= edicion ? usuariosForm.getId() : "" %>"/>
+                <input type="hidden" name="id" value="<%= edicion ? usuarioForm.getId() : "" %>"/>
 
                 <div class="mb-3">
                     <label class="form-label">Usuario</label>
@@ -75,7 +76,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <% if (lista != null) {
+                    <% if (lista != null && !lista.isEmpty()) {
                         for (Usuario u : lista) { %>
                         <tr>
                             <td><%= u.getId() %></td>
@@ -92,7 +93,9 @@
                             </td>
                         </tr>
                     <% }
-                    } %>
+                    } else { %>
+                        <tr><td colspan="4" class="text-center">No hay usuarios registrados.</td></tr>
+                    <% } %>
                 </tbody>
             </table>
         <% } %>
