@@ -158,7 +158,7 @@
         <% if ("admin".equalsIgnoreCase(user.getRol())) { %>
         <li class="nav-item">
             <a class="nav-link <%= request.getRequestURI().contains("/admin/") ? "active" : "" %>" 
-               href="<%= request.getContextPath() %>/admin/usuarios">
+               href="<%= request.getContextPath() %>/usuarios">
                 <i class="fas fa-users"></i>
                 <span>Gestión de Usuarios</span>
             </a>

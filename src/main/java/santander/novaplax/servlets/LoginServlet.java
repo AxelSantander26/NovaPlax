@@ -44,13 +44,11 @@ public class LoginServlet extends HttpServlet {
             String contexto = request.getContextPath();
 
             switch (user.getRol().toLowerCase()) {
-                case "admin":
+                case "admin" ->
                     response.sendRedirect(contexto + "/Pages/Admin/info.jsp");
-                    break;
-                case "vendedor":
+                case "vendedor" ->
                     response.sendRedirect(contexto + "/Pages/Vendedor/info.jsp");
-                    break;
-                default:
+                default ->
                     response.sendRedirect(contexto + "/login.jsp");
             }
         } else {
@@ -58,3 +56,4 @@ public class LoginServlet extends HttpServlet {
             request.getRequestDispatcher("login.jsp").forward(request, response);
         }
     }
+}
