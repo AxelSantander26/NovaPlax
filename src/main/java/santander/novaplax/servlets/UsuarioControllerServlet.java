@@ -6,7 +6,6 @@ import santander.novaplax.model.Usuario;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
-
 import java.io.IOException;
 import java.util.List;
 
@@ -19,41 +18,30 @@ public class UsuarioControllerServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        String action = request.getParameter("action") != null ? request.getParameter("action") : "listar";
+        String action = request.getParameter("action") == null ? "listar" : request.getParameter("action");
 
         switch (action) {
-            case "nuevo":
-                // Solo mostramos el formulario sin datos
+            case "nuevo" -> {
                 request.setAttribute("action", "nuevo");
                 request.getRequestDispatcher("/Pages/Admin/usuarios.jsp").forward(request, response);
-                break;
-
-            case "editar":
-                try {
-                    int id = Integer.parseInt(request.getParameter("id"));
-                    Usuario usuario = dao.buscarPorId(id);
-                    request.setAttribute("usuario", usuario);
-                    request.setAttribute("action", "editar");
-                    request.getRequestDispatcher("/Pages/Admin/usuarios.jsp").forward(request, response);
-                } catch (NumberFormatException e) {
-                    response.sendRedirect("usuarios");
-                }
-                break;
-
-            case "eliminar":
-                try {
-                    int idEliminar = Integer.parseInt(request.getParameter("id"));
-                    dao.eliminar(idEliminar);
-                } catch (NumberFormatException e) {
-                    // Puedes registrar el error
-                }
-                response.sendRedirect("usuarios");
-                break;
-
-            default:
-                List<Usuario> usuarios = dao.listar();
-                request.setAttribute("usuarios", usuarios);  // este nombre debe coincidir con el que usas en usuarios.jsp
+            }
+            case "editar" -> {
+                int id = Integer.parseInt(request.getParameter("id"));
+                Usuario u = dao.buscarPorId(id);
+                request.setAttribute("usuario", u);
+                request.setAttribute("action", "editar");
                 request.getRequestDispatcher("/Pages/Admin/usuarios.jsp").forward(request, response);
+            }
+            case "eliminar" -> {
+                int eliminarId = Integer.parseInt(request.getParameter("id"));
+                dao.eliminar(eliminarId);
+                response.sendRedirect("usuarios");
+            }
+            default -> {
+                List<Usuario> lista = dao.listar();
+                request.setAttribute("lista", lista);
+                request.getRequestDispatcher("/Pages/Admin/usuarios.jsp").forward(request, response);
+            }
         }
     }
 
@@ -62,23 +50,29 @@ public class UsuarioControllerServlet extends HttpServlet {
             throws ServletException, IOException {
 
         String idStr = request.getParameter("id");
+        String usuario = request.getParameter("usuario");
+        String contrasena = request.getParameter("contrasena");
+        String rol = request.getParameter("rol");
 
         Usuario u = new Usuario();
-        u.setUsuario(request.getParameter("usuario"));
-        u.setContrasena(request.getParameter("contrasena"));
-        u.setRol(request.getParameter("rol"));
+        u.setUsuario(usuario);
+        u.setContrasena(contrasena);
+        u.setRol(rol);
 
         if (idStr == null || idStr.isEmpty()) {
+            if (dao.existeUsuario(usuario)) {
+                request.setAttribute("error", "El nombre de usuario ya existe");
+                request.setAttribute("action", "nuevo");
+                request.getRequestDispatcher("/Pages/Admin/usuarios.jsp").forward(request, response);
+                return;
+            }
             dao.insertar(u);
         } else {
-            try {
-                u.setId(Integer.parseInt(idStr));
-                dao.actualizar(u);
-            } catch (NumberFormatException e) {
-                // Manejo de error
-            }
+            u.setId(Integer.parseInt(idStr));
+            dao.actualizar(u);
         }
 
         response.sendRedirect("usuarios");
     }
 }
+
