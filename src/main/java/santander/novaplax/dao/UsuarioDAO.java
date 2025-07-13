@@ -53,7 +53,6 @@ public class UsuarioDAO {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
         }
 
         return u;
@@ -72,7 +71,6 @@ public class UsuarioDAO {
             stmt.executeUpdate();
 
         } catch (SQLException e) {
-            e.printStackTrace();
         }
     }
 
@@ -90,7 +88,7 @@ public class UsuarioDAO {
             stmt.executeUpdate();
 
         } catch (SQLException e) {
-            e.printStackTrace();
+
         }
     }
 
@@ -104,7 +102,6 @@ public class UsuarioDAO {
             stmt.executeUpdate();
 
         } catch (SQLException e) {
-            e.printStackTrace();
         }
     }
 
@@ -132,5 +129,26 @@ public class UsuarioDAO {
 
         return u;
     }
+
+    // ✅ Validar si un nombre de usuario ya existe
+    public boolean existeUsuario(String nombreUsuario) {
+        String sql = "SELECT COUNT(*) FROM usuario WHERE usuario = ?";
+        try (Connection conn = ConexionBD.conectar();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, nombreUsuario);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+
+        } catch (SQLException e) {
+        }
+
+        return false;
+    }
 }
+
+
 
